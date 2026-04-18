@@ -164,11 +164,11 @@ export function Home() {
                 className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-green/20 blur-3xl"
                 aria-hidden="true"
               />
-              <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-brand-green/20 ring-1 ring-brand-green/30">
+              <div className="relative">
                 <img
                   src="/tim-portrait.png"
                   alt="Tim, Owner of 5-Star Handyman"
-                  className="aspect-[4/3] w-full object-cover object-top"
+                  className="h-auto w-full max-h-[600px] object-contain rounded-2xl shadow-2xl shadow-brand-green/20 ring-1 ring-brand-green/30"
                 />
               </div>
             </div>
@@ -278,11 +278,11 @@ export function Home() {
               className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-green/15 blur-3xl"
               aria-hidden="true"
             />
-            <div className="relative overflow-hidden rounded-2xl shadow-2xl shadow-brand-green/20 ring-1 ring-brand-green/25">
+            <div className="relative">
               <img
                 src="/tim-portrait.png"
                 alt="Tim, Owner of 5-Star Handyman"
-                className="aspect-square w-full object-cover object-top"
+                className="h-auto w-full max-h-[600px] object-contain rounded-2xl shadow-2xl shadow-brand-green/20 ring-1 ring-brand-green/25"
               />
             </div>
           </div>
