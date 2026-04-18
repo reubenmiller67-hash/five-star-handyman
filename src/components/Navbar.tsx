@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
+import { Logo } from './Logo'
 
 const navItems = [
   { to: '/', label: 'Home' },
@@ -7,6 +8,9 @@ const navItems = [
   { to: '/about', label: 'About' },
   { to: '/contact', label: 'Contact' },
 ] as const
+
+const phoneDisplay = '(269) 689-6102'
+const phoneHref = 'tel:+12696896102'
 
 export function Navbar() {
   const [open, setOpen] = useState(false)
@@ -20,14 +24,17 @@ export function Navbar() {
   }, [])
 
   return (
-    <header className="sticky top-0 z-50 border-b border-neutral-200 bg-white">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
+    <header className="sticky top-0 z-50 border-b border-brand-grayLt bg-brand-black">
+      <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
         <Link
           to="/"
-          className="text-base font-semibold tracking-tight text-neutral-900"
+          className="flex items-center gap-3"
           onClick={() => setOpen(false)}
         >
-          Five Star Handyman
+          <Logo className="h-10 w-10 flex-shrink-0" />
+          <span className="hidden text-xl font-bold text-brand-white sm:inline">
+            5-Star Handyman
+          </span>
         </Link>
 
         <div className="hidden items-center gap-6 md:flex">
@@ -37,19 +44,25 @@ export function Navbar() {
               to={item.to}
               className={({ isActive }) =>
                 [
-                  'text-sm font-medium text-neutral-700 hover:text-neutral-900',
-                  isActive ? 'text-neutral-900' : '',
+                  'text-sm font-medium text-brand-white hover:text-brand-green',
+                  isActive ? 'text-brand-green' : '',
                 ].join(' ')
               }
             >
               {item.label}
             </NavLink>
           ))}
+          <a
+            href={phoneHref}
+            className="rounded bg-brand-green px-4 py-2 text-sm font-bold text-brand-black hover:bg-brand-greenDk"
+          >
+            Call {phoneDisplay}
+          </a>
         </div>
 
         <button
           type="button"
-          className="inline-flex items-center justify-center rounded-md border border-neutral-300 bg-white p-2 text-neutral-900 hover:bg-neutral-50 md:hidden"
+          className="inline-flex items-center justify-center rounded-md p-2 text-brand-white hover:bg-brand-grayLt md:hidden"
           aria-label="Toggle menu"
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
@@ -80,7 +93,7 @@ export function Navbar() {
       </nav>
 
       {open ? (
-        <div className="border-t border-neutral-200 bg-white md:hidden">
+        <div className="border-t border-brand-grayLt bg-brand-black md:hidden">
           <div className="mx-auto max-w-6xl px-4 py-3">
             <div className="flex flex-col gap-2">
               {navItems.map((item) => (
@@ -90,8 +103,8 @@ export function Navbar() {
                   onClick={() => setOpen(false)}
                   className={({ isActive }) =>
                     [
-                      'rounded-md px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900',
-                      isActive ? 'bg-neutral-50 text-neutral-900' : '',
+                      'rounded-md px-3 py-2 text-sm font-medium text-brand-white hover:bg-brand-grayLt hover:text-brand-green',
+                      isActive ? 'text-brand-green' : '',
                     ].join(' ')
                   }
                 >
@@ -105,4 +118,3 @@ export function Navbar() {
     </header>
   )
 }
-
