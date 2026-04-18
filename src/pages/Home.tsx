@@ -110,7 +110,7 @@ const testimonials = [
 const trustItems = [
   { icon: HomeIcon, label: 'Locally Owned' },
   { icon: Shield, label: 'Licensed & Insured' },
-  { icon: Award, label: '3 Years Experience' },
+  { icon: Award, label: '12+ Years Experience' },
   { icon: DollarSign, label: 'Free Estimates' },
 ] as const
 
@@ -142,7 +142,7 @@ export function Home() {
               </h1>
               <p className="mt-4 text-lg text-brand-white/80 md:text-xl">
                 Bathroom remodels, decks, windows, and the 100 little jobs on your list. Proudly
-                serving Southwest Michigan for 3 years.
+                serving Southwest Michigan with 12+ years of construction experience.
               </p>
               <div className="mt-6 flex flex-col gap-3 md:flex-row">
                 <a
@@ -294,7 +294,8 @@ export function Home() {
               Your neighbor with a hammer.
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-brand-white/80">
-              Hi, I&apos;m Tim. I&apos;ve been fixing up homes across Southwest Michigan for 3 years.
+              Hi, I&apos;m Tim. I&apos;ve been fixing up homes across Southwest Michigan with 12+ years of
+              construction experience.
               From full bathroom remodels to hanging a shelf straight — I treat every job with the
               same care I&apos;d give my own home.
             </p>
@@ -335,6 +336,19 @@ export function Home() {
                 </p>
               </div>
             ))}
+          </div>
+          <p className="mt-8 text-center text-sm italic text-brand-white/60">
+            Verified reviews from my customers on Angi
+          </p>
+          <div className="mt-10 flex justify-center">
+            <a
+              href="https://www.angi.com/companylist/us/mi/colon/five-star-handyman%2C-llc-reviews-10652950.htm#reviews"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded border-2 border-brand-green px-6 py-3 font-bold text-brand-green transition hover:bg-brand-green hover:text-brand-black mt-10"
+            >
+              See All Reviews on Angi →
+            </a>
           </div>
         </div>
       </motion.section>

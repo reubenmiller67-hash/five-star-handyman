@@ -77,23 +77,25 @@ export function About() {
             <h2 className="mt-3 text-3xl font-bold text-brand-white md:text-4xl">
               Honest work for Southwest Michigan.
             </h2>
-            {/* TODO: TIM TO REWRITE IN HIS OWN WORDS */}
-            <p className="mt-6 text-lg leading-relaxed text-brand-white/80">
-              Hi, I&apos;m Tim. For the past 3 years I&apos;ve been running 5-Star Handyman out of Colon,
-              Michigan, serving families and homeowners all across Southwest Michigan — from Sturgis to
-              Kalamazoo to Battle Creek.
-            </p>
-            {/* TODO: TIM TO REWRITE IN HIS OWN WORDS */}
             <p className="mt-4 text-lg leading-relaxed text-brand-white/80">
-              I believe work is worship. Every project — whether it&apos;s a full bathroom remodel or
-              just hanging a shelf straight — deserves the same care, honesty, and craftsmanship.
-              That&apos;s what &ldquo;Serving Him by serving your home&rdquo; means to me.
+              My name is Tim, and I&apos;m the owner of 5-Star Handyman. With over 12 years of experience
+              in construction, I&apos;ve spent much of my life building, repairing, and learning how to
+              do things the right way.
             </p>
-            {/* TODO: TIM TO REWRITE IN HIS OWN WORDS */}
             <p className="mt-4 text-lg leading-relaxed text-brand-white/80">
-              When I&apos;m not working, I&apos;m spending time with my family, at church, or around town.
-              Colon isn&apos;t just where I live — it&apos;s where my neighbors live, and that&apos;s
-              exactly how I treat every job.
+              I come from an Anabaptist background, and my faith shapes how I approach my work. I
+              believe in living out biblical values like honesty, humility, and serving others. The
+              goal isn&apos;t just to complete a job, but to do it faithfully — working &ldquo;as unto the
+              Lord&rdquo; in all things.
+            </p>
+            <p className="mt-4 text-lg leading-relaxed text-brand-white/80">
+              Over the years, I&apos;ve developed a wide range of skills, but what matters most to me is
+              being someone people can trust. I aim to show up when I say I will, communicate
+              clearly, and do solid, dependable work without cutting corners.
+            </p>
+            <p className="mt-4 text-lg leading-relaxed text-brand-white/80">
+              I&apos;m not perfect, but I do my best to treat every customer fairly and to stand behind
+              the work I do.
             </p>
             <p className="mt-10 font-serif text-2xl italic text-brand-white md:text-3xl">— Tim</p>
           </div>
