@@ -64,10 +64,9 @@ export function About() {
               aria-hidden="true"
             />
             <div className="overflow-hidden rounded-2xl shadow-2xl shadow-brand-green/20 ring-1 ring-brand-green/30">
-              {/* TODO: REPLACE WITH REAL PHOTO OF TIM'S WORK */}
               <img
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80"
-                alt="Tim"
+                src="/tim-portrait.png"
+                alt="Tim, Owner of 5-Star Handyman"
                 className="aspect-[4/5] w-full object-cover transition duration-500 hover:scale-[1.02]"
               />
             </div>
