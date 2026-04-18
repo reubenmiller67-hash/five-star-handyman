@@ -67,7 +67,7 @@ export function About() {
               <img
                 src="/tim-portrait.png"
                 alt="Tim, Owner of 5-Star Handyman"
-                className="aspect-[4/5] w-full object-cover transition duration-500 hover:scale-[1.02]"
+                className="aspect-[4/5] w-full object-cover object-top transition duration-500 hover:scale-[1.02]"
               />
             </div>
           </div>

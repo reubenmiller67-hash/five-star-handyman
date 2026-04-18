@@ -168,7 +168,7 @@ export function Home() {
                 <img
                   src="/tim-portrait.png"
                   alt="Tim, Owner of 5-Star Handyman"
-                  className="aspect-[4/3] w-full object-cover"
+                  className="aspect-[4/3] w-full object-cover object-top"
                 />
               </div>
             </div>
@@ -282,7 +282,7 @@ export function Home() {
               <img
                 src="/tim-portrait.png"
                 alt="Tim, Owner of 5-Star Handyman"
-                className="aspect-square w-full object-cover"
+                className="aspect-square w-full object-cover object-top"
               />
             </div>
           </div>
