@@ -159,16 +159,16 @@ export function Home() {
                 </Link>
               </div>
             </div>
-            <div className="relative order-1 w-full flex-1 md:order-2 md:max-w-xl">
+            <div className="relative order-1 w-full self-start md:order-2 md:max-w-xl">
               <div
                 className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-green/20 blur-3xl"
                 aria-hidden="true"
               />
-              <div className="relative">
+              <div className="relative inline-block max-w-full overflow-hidden rounded-2xl ring-1 ring-brand-green/30">
                 <img
                   src="/tim-portrait.png"
                   alt="Tim, Owner of 5-Star Handyman"
-                  className="h-auto w-full max-h-[600px] object-contain rounded-2xl shadow-2xl shadow-brand-green/20 ring-1 ring-brand-green/30"
+                  className="block h-auto w-full max-h-[600px] object-contain rounded-2xl shadow-2xl shadow-brand-green/20"
                 />
               </div>
             </div>
