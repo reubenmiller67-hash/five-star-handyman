@@ -31,7 +31,7 @@ export function Navbar() {
           className="flex items-center gap-3"
           onClick={() => setOpen(false)}
         >
-          <Logo className="h-10 w-10 flex-shrink-0" />
+          <Logo className="h-10 w-auto flex-shrink-0" />
           <span className="hidden text-xl font-bold text-brand-white sm:inline">
             5-Star Handyman
           </span>
