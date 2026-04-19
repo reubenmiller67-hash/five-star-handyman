@@ -7,7 +7,7 @@ export function Footer() {
     <footer className="border-t border-brand-grayLt bg-brand-black">
       <div className="mx-auto max-w-6xl px-4 py-10 text-sm text-brand-white">
         <div className="mb-6 flex justify-center">
-          <Logo className="h-20 w-20" />
+          <Logo className="h-24 w-auto" />
         </div>
         <div className="grid gap-6 md:grid-cols-3">
           <div className="space-y-2">
@@ -18,11 +18,18 @@ export function Footer() {
           </div>
           <div className="space-y-2">
             <div className="font-medium text-brand-white">Email</div>
-            <div className="text-brand-muted">TODO</div>
+            <a
+              href="mailto:fivestarhandyman23@gmail.com"
+              className="text-brand-green hover:underline"
+            >
+              fivestarhandyman23@gmail.com
+            </a>
           </div>
           <div className="space-y-2">
             <div className="font-medium text-brand-white">Service area</div>
-            <div className="text-brand-muted">TODO</div>
+            <p className="text-brand-white/80">
+              Colon, Sturgis, Three Rivers, Centreville, Mendon, Kalamazoo, Battle Creek, Coldwater
+            </p>
           </div>
         </div>
       </div>
