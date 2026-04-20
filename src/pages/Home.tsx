@@ -422,7 +422,7 @@ export function Home() {
             📞 Call Tim: (269) 689-6102
           </a>
           <p className="mt-6 text-sm font-medium text-brand-black/75">
-            Available Mon-Sat • Free estimates • Fully insured
+            Available Mon-Fri 7am-3pm • Free estimates • Fully insured
           </p>
         </div>
       </motion.section>

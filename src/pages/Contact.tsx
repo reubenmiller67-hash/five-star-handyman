@@ -98,7 +98,7 @@ export function Contact() {
             </div>
             <div className="rounded-lg border border-brand-green/30 bg-brand-gray/50 p-5 text-brand-white/90">
               <p className="font-semibold text-brand-white">Hours</p>
-              <p className="mt-1 text-sm">Mon–Sat: 7am–7pm / Sun: By appointment</p>
+              <p className="mt-1 text-sm">Mon–Fri: 7am–3pm</p>
             </div>
           </div>
 
