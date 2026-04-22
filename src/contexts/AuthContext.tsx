@@ -1,4 +1,5 @@
-import { GoogleAuthProvider, User, onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth'
+import { GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth'
+import type { User } from 'firebase/auth'
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { auth, googleProvider, isAdmin as isAdminEmail } from '../firebase'
 
