@@ -18,7 +18,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    console.log('AuthProvider mounted')
     const unsub = onAuthStateChanged(auth, (u) => {
+      console.log('onAuthStateChanged fired, user:', u)
       setUser(u)
       setLoading(false)
     })
@@ -40,7 +42,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await signOut(auth)
       },
     }
-  }, [user])
+  }, [user, loading])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
