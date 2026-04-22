@@ -124,7 +124,9 @@ const trustItems = [
 export function Home() {
   const [heroPhotoUrl, setHeroPhotoUrl] = useState<string | null>(null)
   const [aboutPhotoUrl, setAboutPhotoUrl] = useState<string | null>(null)
+  const [siteContentLoaded, setSiteContentLoaded] = useState(false)
   const [servicePhotos, setServicePhotos] = useState<Record<string, string>>({})
+  const [servicesLoaded, setServicesLoaded] = useState(false)
   const [recentPhotos, setRecentPhotos] = useState<
     { url: string; caption: string; category: string }[]
   >([])
@@ -132,39 +134,54 @@ export function Home() {
   useEffect(() => {
     let alive = true
     async function run() {
-      try {
+      const fetchSiteContent = async () => {
         const siteSnap = await getDoc(doc(db, 'siteContent', 'main'))
         const site = (siteSnap.data() as { heroPhotoUrl?: string; aboutPhotoUrl?: string } | undefined) ?? {}
+        return { heroPhotoUrl: site.heroPhotoUrl ?? null, aboutPhotoUrl: site.aboutPhotoUrl ?? null }
+      }
 
+      const fetchServicePhotos = async () => {
         const serviceKeys = ['bathroom', 'deck', 'window', 'handyman'] as const
-        const serviceSnaps = await Promise.all(
-          serviceKeys.map((key) => getDoc(doc(db, 'services', key))),
-        )
-        const nextServicePhotos: Record<string, string> = {}
+        const serviceSnaps = await Promise.all(serviceKeys.map((key) => getDoc(doc(db, 'services', key))))
+        const next: Record<string, string> = {}
         for (const snap of serviceSnaps) {
           const data = snap.data() as { photoUrl?: string } | undefined
-          if (data?.photoUrl) nextServicePhotos[snap.id] = data.photoUrl
+          if (data?.photoUrl) next[snap.id] = data.photoUrl
         }
+        return next
+      }
 
+      const fetchRecentPhotos = async () => {
         const photoSnaps = await getDocs(
           query(collection(db, 'photos'), orderBy('createdAt', 'desc'), limit(6)),
         )
-        const latest = photoSnaps.docs.map((d) => {
-          const data = d.data() as { url?: string; caption?: string; category?: string }
-          return {
-            url: data.url ?? '',
-            caption: data.caption ?? '',
-            category: data.category ?? 'Other',
-          }
-        })
+        return photoSnaps.docs
+          .map((d) => {
+            const data = d.data() as { url?: string; caption?: string; category?: string }
+            return {
+              url: data.url ?? '',
+              caption: data.caption ?? '',
+              category: data.category ?? 'Other',
+            }
+          })
+          .filter((p) => Boolean(p.url))
+      }
+
+      try {
+        const [site, svc] = await Promise.all([fetchSiteContent(), fetchServicePhotos()])
+        const latest = await fetchRecentPhotos()
 
         if (!alive) return
-        setHeroPhotoUrl(site.heroPhotoUrl ?? null)
-        setAboutPhotoUrl(site.aboutPhotoUrl ?? null)
-        setServicePhotos(nextServicePhotos)
-        setRecentPhotos(latest.filter((p) => Boolean(p.url)))
+        setHeroPhotoUrl(site.heroPhotoUrl)
+        setAboutPhotoUrl(site.aboutPhotoUrl)
+        setServicePhotos(svc)
+        setRecentPhotos(latest)
       } catch {
         // Fail silently and keep the existing hardcoded content.
+      } finally {
+        if (!alive) return
+        setSiteContentLoaded(true)
+        setServicesLoaded(true)
       }
     }
     void run()
@@ -228,11 +245,15 @@ export function Home() {
                 aria-hidden="true"
               />
               <div className="relative inline-block max-w-full overflow-hidden rounded-2xl ring-1 ring-brand-green/30">
-                <img
-                  src={heroPhotoUrl || '/tim-portrait.png'}
-                  alt="Tim, Owner of 5-Star Handyman"
-                  className="block h-auto w-full max-h-[600px] object-contain rounded-2xl shadow-2xl shadow-brand-green/20"
-                />
+                {!siteContentLoaded ? (
+                  <div className="h-[520px] w-[520px] max-w-full animate-pulse rounded-2xl bg-brand-gray" />
+                ) : (
+                  <img
+                    src={heroPhotoUrl || '/tim-portrait.png'}
+                    alt="Tim, Owner of 5-Star Handyman"
+                    className="block h-auto w-full max-h-[600px] object-contain rounded-2xl shadow-2xl shadow-brand-green/20"
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -273,11 +294,15 @@ export function Home() {
               >
                 <div className="relative aspect-video overflow-hidden">
                   {/* TODO: REPLACE WITH REAL PHOTO OF TIM'S WORK */}
-                  <img
-                    src={servicePhotos[s.key] || s.image}
-                    alt=""
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                  />
+                  {!servicesLoaded ? (
+                    <div className="h-full w-full animate-pulse bg-brand-gray" />
+                  ) : (
+                    <img
+                      src={servicePhotos[s.key] || s.image}
+                      alt=""
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+                  )}
                 </div>
                 <div className="flex flex-1 flex-col p-6">
                   <h3 className="text-xl font-bold text-brand-white">{s.title}</h3>
@@ -342,11 +367,15 @@ export function Home() {
               aria-hidden="true"
             />
             <div className="relative">
-              <img
-                src={aboutPhotoUrl || '/tim-portrait.png'}
-                alt="Tim, Owner of 5-Star Handyman"
-                className="h-auto w-full max-h-[600px] object-contain rounded-2xl shadow-2xl shadow-brand-green/20 ring-1 ring-brand-green/25"
-              />
+              {!siteContentLoaded ? (
+                <div className="h-[520px] w-full animate-pulse rounded-2xl bg-brand-gray ring-1 ring-brand-green/25" />
+              ) : (
+                <img
+                  src={aboutPhotoUrl || '/tim-portrait.png'}
+                  alt="Tim, Owner of 5-Star Handyman"
+                  className="h-auto w-full max-h-[600px] object-contain rounded-2xl shadow-2xl shadow-brand-green/20 ring-1 ring-brand-green/25"
+                />
+              )}
             </div>
           </div>
           <div className="flex flex-col justify-center border-l-4 border-brand-green py-2 pl-6 md:pl-8">

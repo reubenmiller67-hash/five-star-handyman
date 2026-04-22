@@ -83,6 +83,7 @@ const blocks = [
 
 export function Services() {
   const [servicePhotos, setServicePhotos] = useState<Record<string, string>>({})
+  const [servicesLoaded, setServicesLoaded] = useState(false)
 
   useEffect(() => {
     let alive = true
@@ -99,6 +100,9 @@ export function Services() {
         setServicePhotos(next)
       } catch {
         // Keep hardcoded fallbacks if Firestore is unavailable.
+      } finally {
+        if (!alive) return
+        setServicesLoaded(true)
       }
     }
     void run()
@@ -145,11 +149,15 @@ export function Services() {
             <div className="flex-1">
               <div className="overflow-hidden rounded-xl shadow-xl shadow-brand-green/10 ring-1 ring-brand-green/20">
                 {/* TODO: REPLACE WITH REAL PHOTO OF TIM'S WORK */}
-                <img
-                  src={servicePhotos[block.key] || block.image}
-                  alt=""
-                  className="aspect-[4/3] w-full object-cover transition duration-500 hover:scale-[1.02]"
-                />
+                {!servicesLoaded ? (
+                  <div className="aspect-[4/3] w-full animate-pulse bg-brand-gray" />
+                ) : (
+                  <img
+                    src={servicePhotos[block.key] || block.image}
+                    alt=""
+                    className="aspect-[4/3] w-full object-cover transition duration-500 hover:scale-[1.02]"
+                  />
+                )}
               </div>
             </div>
             <div className="flex-1">
