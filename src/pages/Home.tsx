@@ -38,21 +38,21 @@ const services = [
     desc: "New deck builds, repairs, and refinishing that'll last years.",
     slug: 'deck-building',
     image:
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
+      'https://images.unsplash.com/photo-1591017683260-5c5c6f4d4f0f?w=800&q=80',
   },
   {
     title: 'Window Replacement',
     desc: 'Old drafty windows out, energy-efficient ones in.',
     slug: 'window-replacement',
     image:
-      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
   },
   {
     title: 'General Handyman',
     desc: 'Doors, drywall, faucets, shelves, caulking — your whole to-do list.',
     slug: 'general-handyman',
     image:
-      'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80',
+      'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=800&q=80',
   },
 ] as const
 
@@ -65,12 +65,12 @@ const fallbackGalleryTiles = [
   {
     label: 'Deck',
     image:
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
+      'https://images.unsplash.com/photo-1591017683260-5c5c6f4d4f0f?w=800&q=80',
   },
   {
     label: 'Windows',
     image:
-      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
   },
   {
     label: 'Kitchen',
@@ -85,7 +85,7 @@ const fallbackGalleryTiles = [
   {
     label: 'Handyman',
     image:
-      'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80',
+      'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=800&q=80',
   },
 ] as const
 
