@@ -5,8 +5,6 @@ import { useAuth } from '../../contexts/AuthContext'
 export function AdminLogin() {
   const { user, loading, isAdmin, signInWithGoogle, signOut } = useAuth()
 
-  console.log('AuthContext rendering, loading:', loading, 'user:', user)
-
   if (!loading && user && isAdmin) return <Navigate to="/admin" replace />
 
   return (
