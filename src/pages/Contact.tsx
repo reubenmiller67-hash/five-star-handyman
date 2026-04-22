@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
-import { MapPin } from 'lucide-react'
+import { MapPin, CheckCircle2 } from 'lucide-react'
+import { useForm, ValidationError } from '@formspree/react'
 
 const phoneHref = 'tel:+12696896102'
 
@@ -33,6 +34,8 @@ const inputClass =
   'w-full rounded border border-brand-gray bg-brand-gray p-3 text-brand-white placeholder:text-brand-muted/70 focus:border-brand-green focus:outline-none focus:ring-2 focus:ring-brand-green/30'
 
 export function Contact() {
+  const [state, handleSubmit] = useForm('mrerywbv')
+
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
       <motion.section className="relative overflow-hidden bg-brand-gray py-16" {...sectionReveal}>
@@ -107,102 +110,123 @@ export function Contact() {
               Request a Free Estimate
               <span className="mt-2 block h-1 w-16 rounded-full bg-brand-green" />
             </h3>
-            {/* TODO: REPLACE YOUR_FORM_ID_HERE with real Formspree ID — sign up at formspree.io with fivestarhandyman23@gmail.com, create a new form, paste the ID here. */}
-            <form
-              action="https://formspree.io/f/YOUR_FORM_ID_HERE"
-              method="POST"
-              className="mt-6 space-y-4"
-            >
-              <input type="hidden" name="_subject" value="New 5-Star Handyman Inquiry" />
-              <div>
-                <label htmlFor="fullName" className="mb-1 block text-sm font-medium text-brand-white">
-                  Full Name <span className="text-brand-green">*</span>
-                </label>
-                <input
-                  id="fullName"
-                  name="name"
-                  type="text"
-                  required
-                  className={inputClass}
-                  autoComplete="name"
-                />
-              </div>
-              <div>
-                <label htmlFor="phone" className="mb-1 block text-sm font-medium text-brand-white">
-                  Phone Number <span className="text-brand-green">*</span>
-                </label>
-                <input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  required
-                  className={inputClass}
-                  autoComplete="tel"
-                />
-              </div>
-              <div>
-                <label htmlFor="email" className="mb-1 block text-sm font-medium text-brand-white">
-                  Email <span className="text-brand-green">*</span>
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  className={inputClass}
-                  autoComplete="email"
-                />
-              </div>
-              <div>
-                <label htmlFor="town" className="mb-1 block text-sm font-medium text-brand-white">
-                  Town / City <span className="text-brand-green">*</span>
-                </label>
-                <input id="town" name="town" type="text" required className={inputClass} />
-              </div>
-              <div>
-                <label htmlFor="projectType" className="mb-1 block text-sm font-medium text-brand-white">
-                  Project Type <span className="text-brand-green">*</span>
-                </label>
-                <select
-                  id="projectType"
-                  name="projectType"
-                  required
-                  className={`${inputClass} cursor-pointer`}
-                  defaultValue=""
-                >
-                  <option value="" disabled className="bg-brand-gray text-brand-muted">
-                    Select a project type
-                  </option>
-                  {projectTypes.map((opt) => (
-                    <option key={opt} value={opt} className="bg-brand-gray">
-                      {opt}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="message" className="mb-1 block text-sm font-medium text-brand-white">
-                  Tell me about your project <span className="text-brand-green">*</span>
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows={5}
-                  required
-                  placeholder="What do you need done? Any details help — room sizes, timeline, budget range, etc."
-                  className={inputClass}
-                />
-              </div>
-              <button
-                type="submit"
-                className="w-full rounded bg-brand-green px-8 py-4 font-bold text-brand-black transition hover:bg-brand-greenDk"
-              >
-                Send Request
-              </button>
-              <p className="text-center text-xs text-brand-white/60">
-                I&apos;ll get back to you within 24 hours. No spam, no pressure.
-              </p>
-            </form>
+            <div className="mt-6">
+              {state.succeeded ? (
+                <div className="rounded-lg bg-brand-gray p-8 text-center">
+                  <CheckCircle2 className="mx-auto h-16 w-16 text-brand-green" aria-hidden="true" />
+                  <h3 className="mt-4 text-2xl font-bold text-brand-white">Thanks — message received!</h3>
+                  <p className="mt-3 text-brand-white/80">
+                    I&apos;ll get back to you within 24 hours. For anything urgent, just call me directly at (269)
+                    689-6102.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <input type="hidden" name="_subject" value="New 5-Star Handyman Inquiry" />
+                  <div>
+                    <label htmlFor="fullName" className="mb-1 block text-sm font-medium text-brand-white">
+                      Full Name <span className="text-brand-green">*</span>
+                    </label>
+                    <input
+                      id="fullName"
+                      name="name"
+                      type="text"
+                      required
+                      className={inputClass}
+                      autoComplete="name"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="phone" className="mb-1 block text-sm font-medium text-brand-white">
+                      Phone Number <span className="text-brand-green">*</span>
+                    </label>
+                    <input
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      required
+                      className={inputClass}
+                      autoComplete="tel"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="email" className="mb-1 block text-sm font-medium text-brand-white">
+                      Email <span className="text-brand-green">*</span>
+                    </label>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      required
+                      className={inputClass}
+                      autoComplete="email"
+                    />
+                    <ValidationError
+                      prefix="Email"
+                      field="email"
+                      errors={state.errors}
+                      className="mt-1 text-sm text-red-400"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="town" className="mb-1 block text-sm font-medium text-brand-white">
+                      Town / City <span className="text-brand-green">*</span>
+                    </label>
+                    <input id="town" name="town" type="text" required className={inputClass} />
+                  </div>
+                  <div>
+                    <label htmlFor="projectType" className="mb-1 block text-sm font-medium text-brand-white">
+                      Project Type <span className="text-brand-green">*</span>
+                    </label>
+                    <select
+                      id="projectType"
+                      name="projectType"
+                      required
+                      className={`${inputClass} cursor-pointer`}
+                      defaultValue=""
+                    >
+                      <option value="" disabled className="bg-brand-gray text-brand-muted">
+                        Select a project type
+                      </option>
+                      {projectTypes.map((opt) => (
+                        <option key={opt} value={opt} className="bg-brand-gray">
+                          {opt}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor="message" className="mb-1 block text-sm font-medium text-brand-white">
+                      Tell me about your project <span className="text-brand-green">*</span>
+                    </label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      rows={5}
+                      required
+                      placeholder="What do you need done? Any details help — room sizes, timeline, budget range, etc."
+                      className={inputClass}
+                    />
+                    <ValidationError
+                      prefix="Message"
+                      field="message"
+                      errors={state.errors}
+                      className="mt-1 text-sm text-red-400"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={state.submitting}
+                    className="w-full rounded bg-brand-green px-8 py-4 font-bold text-brand-black transition hover:bg-brand-greenDk disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {state.submitting ? 'Sending...' : 'Send Request'}
+                  </button>
+                  <p className="text-center text-xs text-brand-white/60">
+                    I&apos;ll get back to you within 24 hours. No spam, no pressure.
+                  </p>
+                </form>
+              )}
+            </div>
           </div>
         </div>
       </motion.section>
