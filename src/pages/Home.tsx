@@ -1,6 +1,9 @@
 import { motion } from 'framer-motion'
+import { collection, doc, getDoc, getDocs, limit, orderBy, query } from 'firebase/firestore'
 import { Award, DollarSign, Home as HomeIcon, MapPin, Shield } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { db } from '../firebase'
 
 const phoneHref = 'tel:+12696896102'
 
@@ -53,7 +56,7 @@ const services = [
   },
 ] as const
 
-const galleryTiles = [
+const fallbackGalleryTiles = [
   {
     label: 'Bathroom',
     image:
@@ -115,6 +118,50 @@ const trustItems = [
 ] as const
 
 export function Home() {
+  const [heroPhotoUrl, setHeroPhotoUrl] = useState<string | null>(null)
+  const [aboutPhotoUrl, setAboutPhotoUrl] = useState<string | null>(null)
+  const [recentPhotos, setRecentPhotos] = useState<
+    { url: string; caption: string; category: string }[]
+  >([])
+
+  useEffect(() => {
+    let alive = true
+    async function run() {
+      try {
+        const siteSnap = await getDoc(doc(db, 'siteContent', 'main'))
+        const site = (siteSnap.data() as { heroPhotoUrl?: string; aboutPhotoUrl?: string } | undefined) ?? {}
+
+        const photoSnaps = await getDocs(
+          query(collection(db, 'photos'), orderBy('createdAt', 'desc'), limit(6)),
+        )
+        const latest = photoSnaps.docs.map((d) => {
+          const data = d.data() as { url?: string; caption?: string; category?: string }
+          return {
+            url: data.url ?? '',
+            caption: data.caption ?? '',
+            category: data.category ?? 'Other',
+          }
+        })
+
+        if (!alive) return
+        setHeroPhotoUrl(site.heroPhotoUrl ?? null)
+        setAboutPhotoUrl(site.aboutPhotoUrl ?? null)
+        setRecentPhotos(latest.filter((p) => Boolean(p.url)))
+      } catch {
+        // Fail silently and keep the existing hardcoded content.
+      }
+    }
+    void run()
+    return () => {
+      alive = false
+    }
+  }, [])
+
+  const recentTiles = useMemo(() => {
+    if (recentPhotos.length === 0) return fallbackGalleryTiles.map((t) => ({ image: t.image, label: t.label }))
+    return recentPhotos.map((p) => ({ image: p.url, label: p.caption?.trim() ? p.caption : p.category }))
+  }, [recentPhotos])
+
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
       {/* 1. Hero */}
@@ -166,7 +213,7 @@ export function Home() {
               />
               <div className="relative inline-block max-w-full overflow-hidden rounded-2xl ring-1 ring-brand-green/30">
                 <img
-                  src="/tim-portrait.png"
+                  src={heroPhotoUrl || '/tim-portrait.png'}
                   alt="Tim, Owner of 5-Star Handyman"
                   className="block h-auto w-full max-h-[600px] object-contain rounded-2xl shadow-2xl shadow-brand-green/20"
                 />
@@ -240,7 +287,7 @@ export function Home() {
             A few projects from around Southwest Michigan.
           </p>
           <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {galleryTiles.map((tile) => (
+            {recentTiles.map((tile) => (
               <div
                 key={tile.label}
                 className="group relative aspect-square overflow-hidden rounded-lg bg-brand-gray"
@@ -280,7 +327,7 @@ export function Home() {
             />
             <div className="relative">
               <img
-                src="/tim-portrait.png"
+                src={aboutPhotoUrl || '/tim-portrait.png'}
                 alt="Tim, Owner of 5-Star Handyman"
                 className="h-auto w-full max-h-[600px] object-contain rounded-2xl shadow-2xl shadow-brand-green/20 ring-1 ring-brand-green/25"
               />
