@@ -27,6 +27,7 @@ const towns = [
 
 const services = [
   {
+    key: 'bathroom',
     title: 'Bathroom Remodels',
     desc: 'Full remodels and refreshes — tubs, showers, tile, vanities, floors.',
     slug: 'bathroom-remodels',
@@ -34,25 +35,28 @@ const services = [
       'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800&q=80',
   },
   {
+    key: 'deck',
     title: 'Deck Building',
     desc: "New deck builds, repairs, and refinishing that'll last years.",
     slug: 'deck-building',
     image:
-      'https://images.unsplash.com/photo-1591017683260-5c5c6f4d4f0f?w=800&q=80',
+      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
   },
   {
+    key: 'window',
     title: 'Window Replacement',
     desc: 'Old drafty windows out, energy-efficient ones in.',
     slug: 'window-replacement',
     image:
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
   },
   {
+    key: 'handyman',
     title: 'General Handyman',
     desc: 'Doors, drywall, faucets, shelves, caulking — your whole to-do list.',
     slug: 'general-handyman',
     image:
-      'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=800&q=80',
+      'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80',
   },
 ] as const
 
@@ -65,12 +69,12 @@ const fallbackGalleryTiles = [
   {
     label: 'Deck',
     image:
-      'https://images.unsplash.com/photo-1591017683260-5c5c6f4d4f0f?w=800&q=80',
+      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
   },
   {
     label: 'Windows',
     image:
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
   },
   {
     label: 'Kitchen',
@@ -85,7 +89,7 @@ const fallbackGalleryTiles = [
   {
     label: 'Handyman',
     image:
-      'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=800&q=80',
+      'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80',
   },
 ] as const
 
@@ -120,6 +124,7 @@ const trustItems = [
 export function Home() {
   const [heroPhotoUrl, setHeroPhotoUrl] = useState<string | null>(null)
   const [aboutPhotoUrl, setAboutPhotoUrl] = useState<string | null>(null)
+  const [servicePhotos, setServicePhotos] = useState<Record<string, string>>({})
   const [recentPhotos, setRecentPhotos] = useState<
     { url: string; caption: string; category: string }[]
   >([])
@@ -130,6 +135,16 @@ export function Home() {
       try {
         const siteSnap = await getDoc(doc(db, 'siteContent', 'main'))
         const site = (siteSnap.data() as { heroPhotoUrl?: string; aboutPhotoUrl?: string } | undefined) ?? {}
+
+        const serviceKeys = ['bathroom', 'deck', 'window', 'handyman'] as const
+        const serviceSnaps = await Promise.all(
+          serviceKeys.map((key) => getDoc(doc(db, 'services', key))),
+        )
+        const nextServicePhotos: Record<string, string> = {}
+        for (const snap of serviceSnaps) {
+          const data = snap.data() as { photoUrl?: string } | undefined
+          if (data?.photoUrl) nextServicePhotos[snap.id] = data.photoUrl
+        }
 
         const photoSnaps = await getDocs(
           query(collection(db, 'photos'), orderBy('createdAt', 'desc'), limit(6)),
@@ -146,6 +161,7 @@ export function Home() {
         if (!alive) return
         setHeroPhotoUrl(site.heroPhotoUrl ?? null)
         setAboutPhotoUrl(site.aboutPhotoUrl ?? null)
+        setServicePhotos(nextServicePhotos)
         setRecentPhotos(latest.filter((p) => Boolean(p.url)))
       } catch {
         // Fail silently and keep the existing hardcoded content.
@@ -258,7 +274,7 @@ export function Home() {
                 <div className="relative aspect-video overflow-hidden">
                   {/* TODO: REPLACE WITH REAL PHOTO OF TIM'S WORK */}
                   <img
-                    src={s.image}
+                    src={servicePhotos[s.key] || s.image}
                     alt=""
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                   />

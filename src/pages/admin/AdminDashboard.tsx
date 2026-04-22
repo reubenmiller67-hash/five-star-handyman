@@ -32,6 +32,31 @@ type SiteContent = {
 
 const categories: PhotoCategory[] = ['Bathroom', 'Deck', 'Window', 'Other']
 
+type ServiceKey = 'bathroom' | 'deck' | 'window' | 'handyman'
+
+const serviceCards: { key: ServiceKey; label: string; fallbackUrl: string }[] = [
+  {
+    key: 'bathroom',
+    label: 'Bathroom Remodels',
+    fallbackUrl: 'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800&q=80',
+  },
+  {
+    key: 'deck',
+    label: 'Deck Building',
+    fallbackUrl: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
+  },
+  {
+    key: 'window',
+    label: 'Window Replacement',
+    fallbackUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
+  },
+  {
+    key: 'handyman',
+    label: 'General Handyman',
+    fallbackUrl: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=80',
+  },
+]
+
 function TabButton({
   active,
   children,
@@ -60,9 +85,14 @@ function TabButton({
 export function AdminDashboard() {
   const { user, loading, isAdmin, signOut } = useAuth()
 
-  const [tab, setTab] = useState<'hero' | 'about' | 'gallery'>('hero')
+  const [tab, setTab] = useState<'hero' | 'about' | 'services' | 'gallery'>('hero')
   const [siteContent, setSiteContent] = useState<SiteContent>({})
   const [siteLoading, setSiteLoading] = useState(true)
+
+  const [servicePhotos, setServicePhotos] = useState<Record<string, string>>({})
+  const [serviceLoading, setServiceLoading] = useState(true)
+  const [serviceUploadingKey, setServiceUploadingKey] = useState<ServiceKey | null>(null)
+  const [serviceSavedKey, setServiceSavedKey] = useState<ServiceKey | null>(null)
 
   const [photos, setPhotos] = useState<PhotoDoc[]>([])
   const [photosLoading, setPhotosLoading] = useState(true)
@@ -74,7 +104,9 @@ export function AdminDashboard() {
 
   const heroInputRef = useRef<HTMLInputElement | null>(null)
   const aboutInputRef = useRef<HTMLInputElement | null>(null)
+  const servicesInputRef = useRef<HTMLInputElement | null>(null)
   const galleryInputRef = useRef<HTMLInputElement | null>(null)
+  const servicesPickKeyRef = useRef<ServiceKey>('bathroom')
 
   const siteDocRef = useMemo(() => doc(db, 'siteContent', 'main'), [])
 
@@ -83,6 +115,18 @@ export function AdminDashboard() {
     const snap = await getDoc(siteDocRef)
     setSiteContent((snap.data() as SiteContent | undefined) ?? {})
     setSiteLoading(false)
+  }
+
+  async function refreshServicePhotos() {
+    setServiceLoading(true)
+    const snaps = await Promise.all(serviceCards.map((s) => getDoc(doc(db, 'services', s.key))))
+    const next: Record<string, string> = {}
+    for (const snap of snaps) {
+      const data = snap.data() as { photoUrl?: string } | undefined
+      if (data?.photoUrl) next[snap.id] = data.photoUrl
+    }
+    setServicePhotos(next)
+    setServiceLoading(false)
   }
 
   async function refreshPhotos() {
@@ -107,6 +151,7 @@ export function AdminDashboard() {
     if (loading) return
     if (!isAdmin) return
     void refreshSiteContent()
+    void refreshServicePhotos()
     void refreshPhotos()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, isAdmin])
@@ -130,6 +175,21 @@ export function AdminDashboard() {
 
     await setDoc(siteDocRef, kind === 'hero' ? { heroPhotoUrl: url } : { aboutPhotoUrl: url }, { merge: true })
     await refreshSiteContent()
+  }
+
+  async function replaceServicePhoto(key: ServiceKey, file: File) {
+    setServiceUploadingKey(key)
+    setServiceSavedKey(null)
+    try {
+      const storageRef = ref(storage, `services/${key}.jpg`)
+      await uploadBytes(storageRef, file, { contentType: file.type || 'image/jpeg' })
+      const url = await getDownloadURL(storageRef)
+      await setDoc(doc(db, 'services', key), { photoUrl: url }, { merge: true })
+      await refreshServicePhotos()
+      setServiceSavedKey(key)
+    } finally {
+      setServiceUploadingKey(null)
+    }
   }
 
   async function uploadNewPhoto() {
@@ -193,6 +253,9 @@ export function AdminDashboard() {
           </TabButton>
           <TabButton active={tab === 'about'} onClick={() => setTab('about')}>
             ABOUT PHOTO
+          </TabButton>
+          <TabButton active={tab === 'services'} onClick={() => setTab('services')}>
+            SERVICE CARD PHOTOS
           </TabButton>
           <TabButton active={tab === 'gallery'} onClick={() => setTab('gallery')}>
             GALLERY
@@ -283,6 +346,79 @@ export function AdminDashboard() {
                     alt="About"
                     className="block h-auto w-full max-h-[520px] object-contain"
                   />
+                )}
+              </div>
+            </div>
+          ) : null}
+
+          {tab === 'services' ? (
+            <div className="rounded-xl border border-brand-grayLt bg-brand-gray p-6">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-bold">Service Card Photos</h2>
+                  <p className="mt-1 text-sm text-brand-white/70">
+                    These photos appear on both the Home page services grid AND the detailed Services page. Edit once,
+                    updates both places.
+                  </p>
+                </div>
+
+                <input
+                  ref={servicesInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0]
+                    if (!f) return
+                    const key = servicesPickKeyRef.current
+                    void replaceServicePhoto(key, f)
+                    e.currentTarget.value = ''
+                  }}
+                />
+              </div>
+
+              <div className="mt-6">
+                {serviceLoading ? (
+                  <div className="rounded-lg border border-brand-black/40 bg-brand-black p-10 text-center text-brand-white/70">
+                    Loading…
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    {serviceCards.map((s) => {
+                      const currentUrl = servicePhotos[s.key] || s.fallbackUrl
+                      const isUploading = serviceUploadingKey === s.key
+                      const isSaved = serviceSavedKey === s.key
+                      return (
+                        <div
+                          key={s.key}
+                          className="overflow-hidden rounded-lg border border-brand-black/40 bg-brand-black"
+                        >
+                          <div className="aspect-video overflow-hidden">
+                            <img src={currentUrl} alt="" className="h-full w-full object-cover" />
+                          </div>
+                          <div className="flex items-center justify-between gap-4 p-4">
+                            <div className="min-w-0">
+                              <p className="truncate text-sm font-bold text-brand-white">{s.label}</p>
+                              <p className="mt-1 text-xs text-brand-white/60">
+                                {isUploading ? 'Uploading…' : isSaved ? 'Saved' : '\u00A0'}
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              disabled={isUploading}
+                              onClick={() => {
+                                servicesPickKeyRef.current = s.key
+                                servicesInputRef.current?.click()
+                              }}
+                              className="rounded bg-brand-green px-4 py-2 text-sm font-bold text-brand-black transition hover:bg-brand-greenDk disabled:opacity-60"
+                            >
+                              Replace Photo
+                            </button>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
                 )}
               </div>
             </div>

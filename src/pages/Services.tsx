@@ -1,6 +1,9 @@
 import { motion } from 'framer-motion'
+import { doc, getDoc } from 'firebase/firestore'
 import { Check } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { db } from '../firebase'
 
 const phoneHref = 'tel:+12696896102'
 
@@ -13,6 +16,7 @@ const sectionReveal = {
 
 const blocks = [
   {
+    key: 'bathroom',
     id: 'bathroom-remodels',
     eyebrow: 'Service 01',
     title: 'Bathroom Remodels',
@@ -28,6 +32,7 @@ const blocks = [
       'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=800&q=80',
   },
   {
+    key: 'deck',
     id: 'deck-building',
     eyebrow: 'Service 02',
     title: 'Deck Building',
@@ -43,6 +48,7 @@ const blocks = [
       'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
   },
   {
+    key: 'window',
     id: 'window-replacement',
     eyebrow: 'Service 03',
     title: 'Window Replacement',
@@ -58,6 +64,7 @@ const blocks = [
       'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80',
   },
   {
+    key: 'handyman',
     id: 'general-handyman',
     eyebrow: 'Service 04',
     title: 'General Handyman',
@@ -75,6 +82,31 @@ const blocks = [
 ] as const
 
 export function Services() {
+  const [servicePhotos, setServicePhotos] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    let alive = true
+    async function run() {
+      try {
+        const keys = ['bathroom', 'deck', 'window', 'handyman'] as const
+        const snaps = await Promise.all(keys.map((key) => getDoc(doc(db, 'services', key))))
+        const next: Record<string, string> = {}
+        for (const snap of snaps) {
+          const data = snap.data() as { photoUrl?: string } | undefined
+          if (data?.photoUrl) next[snap.id] = data.photoUrl
+        }
+        if (!alive) return
+        setServicePhotos(next)
+      } catch {
+        // Keep hardcoded fallbacks if Firestore is unavailable.
+      }
+    }
+    void run()
+    return () => {
+      alive = false
+    }
+  }, [])
+
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
       <motion.section
@@ -114,7 +146,7 @@ export function Services() {
               <div className="overflow-hidden rounded-xl shadow-xl shadow-brand-green/10 ring-1 ring-brand-green/20">
                 {/* TODO: REPLACE WITH REAL PHOTO OF TIM'S WORK */}
                 <img
-                  src={block.image}
+                  src={servicePhotos[block.key] || block.image}
                   alt=""
                   className="aspect-[4/3] w-full object-cover transition duration-500 hover:scale-[1.02]"
                 />
